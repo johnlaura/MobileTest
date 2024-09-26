@@ -32,7 +32,7 @@ class BookingRepository : Repository(), DefaultLifecycleObserver {
 
     private var onAutoRefreshListener: IOnAutoRefreshListener? = null
     private val refreshDataCode = 1
-    private val duration = 10 * 1000L
+    private val duration = 5 * 60 * 1000L
     private val handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
