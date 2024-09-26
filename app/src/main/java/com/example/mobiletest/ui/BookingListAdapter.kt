@@ -26,7 +26,7 @@ class BookingListAdapter :
         holder.binds(getItem(position))
     }
 
-    inner class ViewHolder(private val binding: ItemSegmentBinding) :
+    class ViewHolder(private val binding: ItemSegmentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun binds(value: Segment) {
             with(binding) {
