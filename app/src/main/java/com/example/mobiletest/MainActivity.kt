@@ -2,22 +2,20 @@ package com.example.mobiletest
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.content.edit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mobiletest.data.booking.Segment
 import com.example.mobiletest.repository.BookingRepository
 import com.example.mobiletest.repository.BookingResponseState
 import com.example.mobiletest.ui.BookingListAdapter
-import com.example.mobiletest.utilities.SharePreferencesUtil
 import com.example.mobiletest.viewmodels.BookingViewModel
 import com.example.mobiletest.viewmodels.BookingViewModelFactory
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val tag = MainActivity::class.java.name
@@ -37,8 +35,12 @@ class MainActivity : AppCompatActivity() {
         val recyclerview: RecyclerView = findViewById(R.id.rv_booking)
         recyclerview.adapter = bookingListAdapter
 
-        bookingViewModel.requestBookingResponseLiveData.observe(this) {
-            onRequestData(it.getContentIfNotHandled())
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                bookingViewModel.bookingResultFlow.filterNotNull().collect {
+                    onRequestData(it.getContentIfNotHandled())
+                }
+            }
         }
     }
 
@@ -60,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         result?.onFailure {
-            showToast("Request Failure")
+            showToast(it.message ?: "")
         }
     }
 
