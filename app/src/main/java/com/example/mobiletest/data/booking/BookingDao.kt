@@ -19,5 +19,5 @@ interface BookingDao {
     fun delete()
 
     @Insert
-    suspend fun insertAll(segments: List<Segment>)
+    fun insertAll(segments: List<Segment>)
 }
