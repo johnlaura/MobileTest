@@ -19,9 +19,9 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val tag = MainActivity::class.java.name
+    private val repository = BookingRepository()
 
     private val bookingViewModel: BookingViewModel by viewModels {
-        val repository = BookingRepository()
         this.lifecycle.addObserver(repository)
         BookingViewModelFactory(repository)
     }
@@ -47,6 +47,11 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         bookingViewModel.refreshBookingData()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        this.lifecycle.removeObserver(repository)
     }
 
     private fun onRequestData(result: Result<BookingResponseState>?) {
